@@ -11,7 +11,7 @@ Large-scale crawling and processing Southeast Asian speech into ASR training dat
 
 ## Goals
 1. Collect large-scale speech data from YouTube
-   - Covering Bahasa Indonesia, Indonesian–English code-switching, and Southeast Asian English accents (Indonesian, Filipino).
+   - Covering Bahasa Indonesia, Indonesian–English code-switching (CS), and Southeast Asian (SEA) English accents (Indonesian, Filipino).
 3. Run scalable ASR processing on NSCC
    - Reproduce and adapt the GigaSpeech2 and NeMo SDP / Granary pipelines for Indonesian and SEA data.
 5. Produce high-quality ASR training datasets for low-resource settings
@@ -35,34 +35,42 @@ Raw hours crawled:
 | English – Filipino accent   | ~787            |
 
 ## Internship Timeline
-- **Weeks 1–2 – GigaSpeech2 pipeline & crawling setup**  
-  - Implemented GigaSpeech2 pipeline in the NSCC with a small Indonesian channel 
-  - Set up YouTube crawling (yt-dlp, VPN, cookie handling)  
-  - Refined filters: Reduce confidence threshold and allow LID `ms` and `id`
-  - Use WER to calculate data loss at force alignment stage
 
-- **Weeks 3–4 – Large-scale processing and test Granary pipeline**  
-  - Identify Indonesian speech data sources (e.g. news channels, vlogs, etc.)
-  - Scale up Indonesian crawling and processing (~1.3k hours)
-  - Set up NeMo SDP / Granary pipeline: modify config processors for ASR training
-  - Generate Granary manifest and tarred dataset 
+- **Weeks 1–2 – GigaSpeech2 pipeline & crawling setup**  
+  - Implemented the GigaSpeech2 pipeline on the NSCC cluster for a small Indonesian channel.  
+  - Set up YouTube crawling on Colab (yt-dlp, VPN, cookie handling and sleep intervals).  
+  - Refined filtering: reduced confidence threshold and allowed LID labels `ms` and `id`.  
+  - Used WER analysis to assess alignment quality and data loss in the forced alignment stage.
+
+- **Weeks 3–4 – Large-scale processing & Granary trial**  
+  - Identified Indonesian speech data sources (news channels, vlogs, commentary, etc.).  
+  - Scaled up crawling and processing to ~1.3k hours of Indonesian audio.  
+  - Set up the NeMo SDP / Granary pipeline on NSCC, modifying config processors for ASR training.  
+  - Generated Granary manifests and tarred datasets as pipeline outputs.
 
 - **Weeks 5–6 – Scaling up & quality control**  
-  - Implemented batching and parallel processing for GigaSpeech2 pipeline
-  - Compared GigaSpeech2 vs Granary pipelines: processing speed, segment length/quality 
-  - Investigated Granary segmentation (boundary word loss, chunking, hallucination)
+  - Implemented batching and parallel processing for the GigaSpeech2 pipeline on NSCC.  
+  - Compared GigaSpeech2 and Granary in terms of processing speed, segment length, and transcript quality.  
+  - Investigated Granary segmentation issues (boundary word loss, chunking behaviour, hallucinations).
 
 - **Weeks 7–8 – SEA English accents & normalisation**  
-  - Shifted focus to SEA-accented English
-  - Tested Indonesian text normalisation (numbers, currency, time)  
-  - Decided to drop utterances with numbers/dates due to speech-transcript mismatch
-  - Implemented punctuation-based segmentation for Granary outputs
+  - Shifted focus to SEA–accented English: Crawled Indonesian-accented English channels. 
+  - Tested Indonesian text normalisation (numbers, currency, time).  
+  - Prototyped a merged pipeline: Granary for transcription, GigaSpeech2 for force alignment, filtering, and segmentation.  
+  - Exported segment-level `txt` samples containing utterance IDs and start–end timestamps.
 
-- **Weeks 9–10 – Segmentation strategies & repo cleanup**  
-  - Implemented punctuation-based segmentation and number removal post-processing  
-  - Regrouped segments by video and aligned manifests more closely to GigaSpeech2 format  
-  - Prepared this repository (code organisation, configs, and documentation)
+- **Weeks 9–10 – Segmentation strategies & dataset assembly**  
+  - Continued Indonesian and Filipino-accented English crawling.  
+  - Implemented punctuation-based segmentation for Granary transcripts, inserted after the transcription stage.  
+  - Added post-processing rules to remove utterances containing numbers and dates.  
+  - Compiled processed segments into a training dataset with aligned `wav`–`txt` pairs.
 
-- **Weeks 11–12 – Segmentation strategies & repo cleanup**
-  - Update yt-dlp crawling script with deno
+- **Weeks 11–12 – Robust crawling & accented English evaluation**  
+  - Continued Filipino-accented English crawling.  
+  - Updated the yt-dlp crawling script to use a local `deno` installation for deciphering YouTube `n`/`sig` values.  
+  - Sampled ~10 hours of segment-level wav–transcript pairs for export.  
+  - Compared GigaSpeech2 and Granary performance on noisy, accented English data.
 
+- **Weeks 13–14 – Final processing & repository preparation**  
+  - Processed Indonesian-accented English data with the GigaSpeech2 pipeline.
+  - Compiled this repository as an internship deliverable.
