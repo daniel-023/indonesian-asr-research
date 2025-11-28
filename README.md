@@ -1,25 +1,25 @@
 # Indonesian ASR @ NTU Speech & Language Lab
-Large-scale crawling and processing Southeast Asian speech into ASR training datasets for downstream model training.
+Large-scale crawling and processing of Southeast Asian speech into ASR training datasets for downstream model training.
 
 ## Project Components:
 - YouTube crawling with [yt-dlp](https://github.com/yt-dlp/yt-dlp) on Google Colab
-- Large-scale audio processing on NSCC ASPIRE 2A
+- Large-scale audio processing on NSCC ASPIRE2A
 - Automatic transcription / segmentation via:
   - [GigaSpeech2](https://github.com/SpeechColab/GigaSpeech2)
   - [NeMo SDP (Granary)](https://github.com/NVIDIA/NeMo-speech-data-processor/tree/main/dataset_configs/multilingual/granary)
 - Segment normalisation, filtering, and dataset export for ASR training
 
 ## Goals
-1. Collect large-scale speech data from YouTube
+1. Collect in-the-wild speech data from YouTube
    - Covering Indonesian, Indonesian–English code-switching (CS), and Southeast Asian (SEA) English accents (Indonesian, Filipino).
-3. Run scalable ASR processing on NSCC
+2. Run scalable ASR processing on NSCC
    - Reproduce and adapt the GigaSpeech2 and NeMo SDP / Granary pipelines for Indonesian and SEA data.
-5. Produce high-quality ASR training datasets for low-resource settings
+3. Produce high-quality ASR training datasets for low-resource settings
    - Generate segmented audio + transcripts with consistent normalisation, filtering, and manifests ready for downstream ASR training.
    
 ## High-Level Pipeline
-1. Crawl audio & metadata on Google Colab using yt-dlp (with rate limiting / VPN or cookie handling as needed).
-2. Sync crawled data to NSCC via `scp` / `rsync` into `/scratch` directory.
+1. Crawl audio & metadata on Google Colab using yt-dlp.
+2. Sync crawled data to NSCC via `scp` / `rsync` into the `/scratch` directory.
 3. Run speech processing pipelines:
    - GigaSpeech2
    - NeMo SDP / Granary
@@ -28,6 +28,7 @@ Large-scale crawling and processing Southeast Asian speech into ASR training dat
 
 ## Data Overview
 Raw hours crawled:
+
 | Category                    | Hours (approx.) |
 |-----------------------------|-----------------|
 | Indonesian (mono + CS)      | ~2,900          |
