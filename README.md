@@ -11,7 +11,7 @@ Large-scale crawling and processing Southeast Asian speech into ASR training dat
 
 ## Goals
 1. Collect large-scale speech data from YouTube
-   - Covering Bahasa Indonesia, Indonesian–English code-switching (CS), and Southeast Asian (SEA) English accents (Indonesian, Filipino).
+   - Covering Indonesian, Indonesian–English code-switching (CS), and Southeast Asian (SEA) English accents (Indonesian, Filipino).
 3. Run scalable ASR processing on NSCC
    - Reproduce and adapt the GigaSpeech2 and NeMo SDP / Granary pipelines for Indonesian and SEA data.
 5. Produce high-quality ASR training datasets for low-resource settings
