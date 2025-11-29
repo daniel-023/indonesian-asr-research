@@ -19,7 +19,7 @@ Large-scale crawling and processing of Southeast Asian speech into ASR training 
    
 ## High-Level Pipeline
 1. Crawl audio & metadata on Google Colab using yt-dlp.
-2. Sync crawled data to NSCC via `scp` / `rsync` into the `/scratch` directory.
+2. Sync crawled data to NSCC via `scp` or `rsync` into the `/scratch` directory.
 3. Run speech processing pipelines:
    - GigaSpeech2
    - NeMo SDP / Granary
@@ -41,7 +41,7 @@ Raw hours crawled:
   - Implemented the GigaSpeech2 pipeline on the NSCC cluster for a small Indonesian channel.  
   - Set up YouTube crawling on Colab (yt-dlp, VPN, cookie handling and sleep intervals).  
   - Refined filtering: reduced confidence threshold and allowed LID labels `ms` and `id`.  
-  - Used WER analysis to assess alignment quality and data loss in the forced alignment stage.
+  - Used WER analysis to assess alignment quality and data loss in the force alignment stage.
 
 - **Weeks 3–4 – Large-scale processing & Granary trial**  
   - Identified Indonesian speech data sources (news channels, vlogs, commentary, etc.).  
