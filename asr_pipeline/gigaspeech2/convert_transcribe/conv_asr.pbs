@@ -1,0 +1,78 @@
+#!/bin/bash
+#PBS -q normal
+#PBS -N conv_asr
+#PBS -l select=1:ncpus=8:ngpus=1:mem=24gb
+#PBS -l walltime=12:00:00
+#PBS -P personal-daniel02
+#PBS -j oe
+
+set -euo pipefail
+cd "$PBS_O_WORKDIR"
+
+# Required variables
+ASR_LANG="${ASR_LANG:?ASR_LANG not set (en/id)}"
+CHANNEL="${CHANNEL:?CHANNEL not set}"
+
+# Optional depending on ASR_LANG
+MODE="${MODE:-}"
+COUNTRY="${COUNTRY:-}"
+
+module purge
+module load python/3.10.9
+module load ffmpeg
+module load cuda/12.2.1
+module load cudnn/12-9.8.0.87
+
+source /scratch/users/ntu/daniel02/GigaSpeech2/envs/fwhisper/bin/activate
+PY=/scratch/users/ntu/daniel02/GigaSpeech2/envs/fwhisper/bin/python
+
+# ───────────────────────────────────────────────────────────
+#  PATH SELECTION
+# ───────────────────────────────────────────────────────────
+BASE=/scratch/users/ntu/daniel02/GigaSpeech2/${ASR_LANG}
+
+if [[ "$ASR_LANG" == "id" ]]; then
+    [[ -n "$MODE" ]] || { echo "ERROR: MODE must be set for Indonesian"; exit 1; }
+    RAW_BASE="${BASE}/raw_audio/${MODE}/${CHANNEL}/audio"
+    OUT_BASE="${BASE}/work/${MODE}/${CHANNEL}"
+    WHISPER_CODE="id"
+elif [[ "$ASR_LANG" == "en" ]]; then
+    [[ -n "$COUNTRY" ]] || { echo "ERROR: COUNTRY must be set for English"; exit 1; }
+    RAW_BASE="${BASE}/raw_audio/${COUNTRY}/${CHANNEL}/audio"
+    OUT_BASE="${BASE}/work/${COUNTRY}/${CHANNEL}"
+    WHISPER_CODE="en"
+else
+    echo "Unsupported ASR_LANG: $ASR_LANG"
+    exit 1
+fi
+
+# ───────────────────────────────────────────────────────────
+#  BATCHING LOGIC
+# ───────────────────────────────────────────────────────────
+if [[ -n "${PBS_ARRAY_INDEX:-}" ]]; then
+    printf -v BATCH "%03d" "$PBS_ARRAY_INDEX"
+    RAW="${RAW_BASE}/batch_${BATCH}"
+    OUT="${OUT_BASE}/batch_${BATCH}"
+else
+    RAW="${RAW_BASE}"
+    OUT="${OUT_BASE}"
+fi
+
+mkdir -p "$OUT" "$OUT/list"
+
+# ───────────────────────────────────────────────────────────
+#  RUN TRANSCRIPTION
+# ───────────────────────────────────────────────────────────
+echo "RUNNING ASR:"
+echo "ASR_LANG   = $ASR_LANG"
+echo "CHANNEL    = $CHANNEL"
+echo "RAW        = $RAW"
+echo "OUT        = $OUT"
+echo "WHISPER_CODE = $WHISPER_CODE"
+
+$PY /scratch/users/ntu/daniel02/GigaSpeech2/GigaSpeech2/pipeline/convert_transcribe/convert_and_transcribe.py \
+  --lang "$WHISPER_CODE" \
+  --root-dir "$RAW" \
+  --save-dir "$OUT" \
+  --list-dir "$OUT/list" \
+  --use-faster-whisper True

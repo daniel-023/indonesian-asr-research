@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -q normal
+#PBS -N granary_run
+#PBS -l select=1:ncpus=8:ngpus=1:mem=24GB
+#PBS -l walltime=06:00:00
+#PBS -P personal-daniel02
+#PBS -j oe
+
+set -euo pipefail
+cd "$PBS_O_WORKDIR"
+
+module purge
+module load python/3.10.9
+module load ffmpeg
+module load cuda/12.2.1
+module load cudnn/12-9.8.0.87
+
+# activate venv
+source /scratch/users/ntu/daniel02/Granary/envs/sdp/bin/activate
+
+# add sox binary from micromamba env
+export PATH=/scratch/users/ntu/daniel02/GigaSpeech2/mamba/envs/soxbin/bin:$PATH
+
+SDP_DIR=/scratch/users/ntu/daniel02/Granary/NeMo-speech-data-processor
+
+python ${SDP_DIR}/main.py \
+  --config-path ${SDP_DIR}/dataset_configs/multilingual/granary/ \
+  --config-name config.yaml \
+  input_manifest_file=/scratch/users/ntu/daniel02/Granary/input_manifest.json \
+  output_dir=/scratch/users/ntu/daniel02/Granary/id/work/granary_test_2/output \
+  sdp_dir=${SDP_DIR}

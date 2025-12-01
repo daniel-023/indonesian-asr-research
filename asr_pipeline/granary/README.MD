@@ -1,0 +1,1 @@
+1. Generate input manifest
