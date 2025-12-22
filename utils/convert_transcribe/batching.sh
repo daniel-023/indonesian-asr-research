@@ -1,8 +1,7 @@
 #!/bin/bash
 
-in_dir=${1%/}
 # Define the number of files per subfolder
-FILES_PER_SUBFOLDER=in_dir=$2
+FILES_PER_SUBFOLDER=50
 
 # Define the prefix for subfolder names
 SUBFOLDER_PREFIX="batch_"
@@ -14,7 +13,7 @@ i=0
 subfolder_num=1
 
 # Loop through all files in the current directory
-for f in "${in_dir}"/*.webm; do
+for f in *.webm; do
     # Check if the current item is a file
     if [[ -f "$f" ]]; then
         # Create the subfolder if it doesn't exist
