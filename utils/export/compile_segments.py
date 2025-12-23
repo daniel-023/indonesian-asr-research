@@ -1,3 +1,23 @@
+"""
+Extract per-video TXT transcripts from filtered manifests.
+
+This script searches all:
+    WORK_ROOT/<mode>/<channel>/batch_*/output_filter/filtered_*.jsonl
+
+and writes sentence-level lines to:
+    OUT_ROOT/<mode>/<channel>/<video>.txt
+
+Each line is formatted as:
+    <basename>-<start>-<end>    <text>
+
+Batches are handled automatically; segments from the same video
+are merged into one TXT file.
+
+Usage:
+    Set WORK_ROOT and OUT_ROOT, then run:
+        python extract_txt_segments.py
+"""
+
 import os, json, glob
 from collections import defaultdict
 from pathlib import Path
